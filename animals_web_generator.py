@@ -1,9 +1,27 @@
+import requests
 import json
+import os
+from dotenv import load_dotenv
 
-def load_data(file_path):
-    """Loads a JSON file and returns its contents."""
-    with open(file_path, "r") as handle:
-        return json.load(handle)
+
+load_dotenv()
+base_url = "https://api.api-ninjas.com/v1/animals"
+api_key = os.getenv("API_KEY")
+
+
+def load_data_from_api(animal, api):
+    '''Loads data from animals api and returns its contents.'''
+    params = {
+    "name": animal,
+    "X-Api-Key": api
+    }
+
+    response = requests.get(base_url, params=params)
+    data = response.json()
+    #print(data)
+
+    return data
+    
 
 
 def serialize_animal(animal):
@@ -64,11 +82,17 @@ def create_html(html_content):
 
 
 def main():
-    # Load animal data from JSON
-    animals_data = load_data('animals_data.json')
 
-    # Generate HTML content
-    html_content = get_data_from_file(animals_data)
+    choosen_animal = input("What animal you want?: ")
+
+    # Load animal data from API
+    animals_data = load_data_from_api(choosen_animal, api_key)
+
+    if not animals_data:
+        html_content = f"<h2> The animal *{choosen_animal}* doesn't exist.</h2>"
+    else:
+        # Generate HTML content
+        html_content = get_data_from_file(animals_data)
 
     # Create and save final HTML file
     create_html(html_content)
