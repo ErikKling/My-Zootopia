@@ -1,28 +1,6 @@
-import requests
 import json
-import os
-from dotenv import load_dotenv
-
-
-load_dotenv()
-base_url = "https://api.api-ninjas.com/v1/animals"
-api_key = os.getenv("API_KEY")
-
-
-def load_data_from_api(animal, api):
-    '''Loads data from animals api and returns its contents.'''
-    params = {
-    "name": animal,
-    "X-Api-Key": api
-    }
-
-    response = requests.get(base_url, params=params)
-    data = response.json()
-    #print(data)
-
-    return data
+import data_fetcher
     
-
 
 def serialize_animal(animal):
     """
@@ -86,7 +64,7 @@ def main():
     choosen_animal = input("What animal you want?: ")
 
     # Load animal data from API
-    animals_data = load_data_from_api(choosen_animal, api_key)
+    animals_data = data_fetcher.load_data_from_api(choosen_animal)
 
     if not animals_data:
         html_content = f"<h2> The animal *{choosen_animal}* doesn't exist.</h2>"
